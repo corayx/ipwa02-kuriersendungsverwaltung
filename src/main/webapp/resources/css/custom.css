@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+body {
+    margin: 3em;
+    font-family: sans-serif;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin: 1em 0em;
+}
+
+h2 {
+    font-size: 2rem;
+    margin: 0.5em 0em;
+}
+
+.ui-chip-text {
+    font-size: 0.75em;
+}
+
+.ui-chip.chip-ready_for_collection {
+    background: palegreen;
+}
+
+.ui-chip.chip-failed_attempt {
+    background: palevioletred;
+}
+
+.ui-chip.chip-out_for_delivery {
+    background: palegoldenrod;
+}
+
+.center {
+    margin: auto;
+    width: 50%;
+}
+
+
+.ui-selectonebutton {
+    display: block !important;
+}

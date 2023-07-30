@@ -1,0 +1,74 @@
+<ui:composition template="/WEB-INF/templates/master.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">Sendung erfassen - Delivery 4 You</ui:define>
+
+    <ui:define name="content">
+
+        <h1>Sendung erfassen</h1>
+
+        <p:steps activeIndex="1" id="steps">
+            <p:menuitem value="Erfassen"/>
+            <p:menuitem value="Frankieren"/>
+            <p:menuitem value="Abschluss"/>
+        </p:steps>
+
+
+        <h:outputText value="#{stampController.prepareStampSelection()}"/>
+
+        <p:messages for="frankSuccess" showDetail="true"/>
+
+        <h:panelGroup layout="block" style="text-align: center; padding: 2em 0 2em 0;">
+            Für die Sendung werden Briefmarken im Wert von <b><h:outputText
+                value="#{shipmentController.price}"/> €</b> benötigt.
+        </h:panelGroup>
+
+
+        <p:messages for="frankMessage" showDetail="false"/>
+
+        <h:form id="frankShipmentForm">
+            <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-8,ui-grid-col-4" styleClass="center">
+                <c:forEach var="stamptype" items="#{courierservice.stampTypes}">
+
+                    <p:column>
+                        <b>#{stamptype.name()}</b><br></br>
+                        Wert: #{stamptype.getValue()} €
+                    </p:column>
+                    <p:column>
+                        <p:spinner min="0" id="#{stamptype.name()}" name="#{stamptype.name()}"
+                                   value="#{stampController.stampSelection[stamptype]}"
+                                   converter="jakarta.faces.Integer"
+                                   upButtonStyleClass="ui-button-secondary"
+                                   downButtonStyleClass="ui-button-secondary">
+                            <p:ajax update="sum" event="change"
+                                    listener="#{stampController.stampChanged()}"/>
+                        </p:spinner>
+                    </p:column>
+
+                </c:forEach>
+
+                <p:column>
+                    <h:outputText value="Summe:"/>
+                </p:column>
+                <p:column>
+                    <h:outputText id="sum" name="sum" value="#{stampController.stampSum} €"/>
+                </p:column>
+
+                <p:column></p:column>
+                <p:column>
+                    <p:commandButton id="frankShipment" value="Sendung frankieren" update=""
+                                     action="#{stampController.addStampsToShipment(shipmentController.shipment, shipmentController.price)}"/>
+                </p:column>
+
+            </p:panelGrid>
+        </h:form>
+
+        <br></br>
+
+
+    </ui:define>
+</ui:composition>

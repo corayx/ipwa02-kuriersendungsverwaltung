@@ -1,0 +1,52 @@
+<ui:composition template="/WEB-INF/templates/master.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">Sendungsübersicht - Delivery 4 You</ui:define>
+
+    <ui:define name="content">
+        <h1>Sendungsübersicht</h1>
+
+        <p:dataTable id="shipments" var="shipment" value="#{courierservice.shipments}" showGridlines="true"
+                     rows="10" paginator="true" paginatorPosition="both" tableStyle="table-layout: auto;"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} von {totalRecords} Sendungen"
+                     rowsPerPageTemplate="10,30,{ShowAll|'Alle'}" reflow="true">
+            <p:column headerText="#">
+                <h:outputText value="#{shipment.id}" />
+            </p:column>
+            <p:column headerText="Typ">
+                <h:outputText value="#{shipment.class.simpleName == 'Letter' ? 'Brief' : 'Paket'}"/>
+            </p:column>
+            <p:column headerText="Status">
+                <p:chip label="#{shipment.status}" styleClass="chip-#{fn:toLowerCase(shipment.status)}"/>
+            </p:column>
+            <p:column headerText="Größe">
+                <h:outputText value="#{shipment.length}"/> x <h:outputText value="#{shipment.width}"/> x <h:outputText
+                    value="#{shipment.height}"/> mm
+            </p:column>
+            <p:column headerText="Gewicht">
+                <h:outputText value="#{shipment.weight}"/> g
+            </p:column>
+
+            <p:column headerText="Empfänger">
+                <h:outputText value="#{shipment.recipient.firstname}"/>&#160;
+                <h:outputText value="#{shipment.recipient.name}"/>
+            </p:column>
+            <p:column headerText="Lieferadresse">
+                <h:outputText value="#{shipment.recipient.streetname}"/>&#160;
+                <h:outputText value="#{shipment.recipient.streetnr}"/>,&#160;
+                <h:outputText value="#{shipment.recipient.zip}"/>&#160;
+                <h:outputText value="#{shipment.recipient.city}"/>&#160;
+            </p:column>
+            <p:column headerText="Sperrgut?">
+                <h:outputText value="#{shipment.bulkygoods ? 'ja' : ''}"
+                              rendered="#{shipment.class.simpleName == 'Parcel'}"/>
+            </p:column>
+        </p:dataTable>
+
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,93 @@
+<ui:composition template="/WEB-INF/templates/master.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">Sendung erfassen - Delivery 4 You</ui:define>
+
+    <ui:define name="content">
+
+        <h1>Sendung erfassen</h1>
+
+        <p:steps activeIndex="0" id="steps">
+            <p:menuitem value="Erfassen"/>
+            <p:menuitem value="Frankieren"/>
+            <p:menuitem value="Abschluss"/>
+        </p:steps>
+
+        <h:form id="changeType">
+
+            <p:selectOneButton id="shipment" value="#{shipmentController.type}" styleClass="center" style="padding: 2em 0 2em 0; text-align: center; width: 100%">
+                <f:selectItem itemLabel="Brief" itemValue="letter"/>
+                <f:selectItem itemLabel="Paket" itemValue="parcel"/>
+                <p:ajax listener="#{shipmentController.typeChanged()}"
+                        update="createShipmentForm"
+                        event="change"/>
+            </p:selectOneButton>
+
+        </h:form>
+
+        <h:form id="createShipmentForm">
+
+            <p:messages for="size" showDetail="true"/>
+
+            <p:panelGrid columns="2" layout="grid" rendered="#{shipmentController.shipment != null}" style="margin-left: auto; margin-right: auto; width: 80%">
+
+                <p:outputLabel for="@next" value="Sperrgut" rendered="#{shipmentController.type == 'parcel'}"/>
+                <p:toggleSwitch rendered="#{shipmentController.type == 'parcel'}"
+                                value="#{shipmentController.shipment.bulkygoods}"/>
+
+                <p:column>
+                    <p:outputLabel for="@next" value="Größe" indicateRequired="true"/><br></br>
+                    <h:outputText value="(Länge x Breite x Höhe)"/>
+                </p:column>
+
+                <p:column>
+                    <p:spinner value="#{shipmentController.shipment.length}" label="Länge" min="80"
+                               maxlength="4"
+                               size="8" suffix=" mm"/> x
+                    <p:spinner value="#{shipmentController.shipment.width}" label="Breite" min="50"
+                               maxlength="4"
+                               size="8" suffix=" mm"/> x
+                    <p:spinner value="#{shipmentController.shipment.height}" label="Höhe" min="1" maxlength="4"
+                               size="8"
+                               suffix=" mm"/>
+                </p:column>
+
+                <p:outputLabel for="@next" value="Gewicht" indicateRequired="true"/>
+                <p:spinner value="#{shipmentController.shipment.weight}" min="10" suffix=" g" stepFactor="10"/>
+
+                <p:outputLabel for="@next" value="Vorname" indicateRequired="true"/>
+                <p:inputText value="#{shipmentController.shipment.recipient.firstname}" required="true"/>
+
+                <p:outputLabel for="@next" value="Nachname" indicateRequired="true"/>
+                <p:inputText value="#{shipmentController.shipment.recipient.name}" required="true"/>
+
+                <p:outputLabel for="@next" value="Straße / Hausnr." indicateRequired="true"/>
+                <p:column>
+                    <p:inputText value="#{shipmentController.shipment.recipient.streetname}" required="true"/>&#160;
+                    <p:inputText value="#{shipmentController.shipment.recipient.streetnr}" maxlength="8"
+                                 size="8"
+                                 required="true"/>
+                </p:column>
+
+                <p:outputLabel for="@next" value="PLZ / Ort" indicateRequired="true"/>
+                <p:column>
+                    <p:inputText value="#{shipmentController.shipment.recipient.zip}" maxlength="5" size="5"
+                                 required="true"/>&#160;
+                    <p:inputText value="#{shipmentController.shipment.recipient.city}" required="true"/>
+                </p:column>
+
+                <p:column></p:column>
+                <p:column>
+                    <p:commandButton id="saveShipment" value="Sendung erfassen"
+                                     action="#{shipmentController.createShipment}" update="createShipmentForm"/>
+                </p:column>
+            </p:panelGrid>
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>
